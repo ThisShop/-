@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aqua Market - Магазин цифровых товаров</title>
+    <!-- Подключение Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Подключение библиотеки для генерации QR-кодов -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- Подключение шрифтов -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Основные стили и кастомизация под неоновую тему */
+        :root {
+            --primary-glow: 0 0 5px #00d9ff, 0 0 10px #00d9ff, 0 0 20px #00d9ff;
+            --secondary-glow: 0 0 5px #ff00c1, 0 0 10px #ff00c1, 0 0 20px #ff00c1;
+        }
+
+        body {
+            background-color: #0d1117;
+            font-family: 'Inter', sans-serif;
+            color: #c9d1d9;
+        }
+
+        h1, h2, h3, .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .glass-card {
+            background: rgba(13, 17, 23, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(56, 139, 253, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(0, 217, 255, 0.7);
+            box-shadow: var(--primary-glow);
+        }
+
+        .glow-button {
+            transition: all 0.3s ease;
+            box-shadow: var(--primary-glow);
+            border: 1px solid #00d9ff;
+        }
+        .glow-button:hover {
+            box-shadow: 0 0 10px #00d9ff, 0 0 20px #00d9ff, 0 0 40px #00d9ff;
+            transform: scale(1.05);
+        }
+
+        .modal-backdrop { transition: opacity 0.3s ease; }
+        .modal-content { transition: transform 0.3s ease, opacity 0.3s ease; }
+        
+        /* Анимация появления */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+    <!-- Шапка сайта -->
+    <header class="sticky top-0 z-50 glass-card border-t-0 border-l-0 border-r-0">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold font-orbitron text-white">
+                <a href="#">AQUA<span class="text-cyan-400">MARKET</span></a>
+            </div>
+            <nav class="hidden md:flex items-center space-x-8 text-lg">
+                <a href="#products" class="hover:text-cyan-400 transition-colors">Товары</a>
+                <a href="#advantages" class="hover:text-cyan-400 transition-colors">Преимущества</a>
+            </nav>
+            <div class="flex items-center space-x-4">
+                <div class="text-right">
+                    <span class="text-sm text-gray-400">Баланс</span>
+                    <div id="balance-display" class="font-bold text-lg text-white">0.00 USDT</div>
+                </div>
+                <button onclick="openTopUpModal()" class="bg-cyan-500 text-white font-bold py-2 px-4 rounded-lg glow-button text-sm">Пополнить</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <!-- Главный экран -->
+        <section class="text-center py-20 fade-in-up">
+            <h1 class="text-5xl md:text-7xl font-bold text-white leading-tight">
+                МАРКЕТПЛЕЙС <br class="hidden md:block">
+                <span class="text-cyan-400">ЦИФРОВЫХ ТОВАРОВ</span>
+            </h1>
+            <p class="mt-6 text-xl text-gray-300 max-w-2xl mx-auto">
+                Мгновенная покупка и доставка ключей, аккаунтов и другого цифрового контента.
+            </p>
+            <a href="#products" class="mt-10 inline-block bg-cyan-500 text-white font-bold text-xl py-4 px-10 rounded-lg glow-button">
+                Перейти к покупкам
+            </a>
+        </section>
+
+        <!-- Преимущества -->
+        <section id="advantages" class="py-20">
+            <h2 class="text-4xl font-bold text-center text-white mb-12 fade-in-up">Наши преимущества</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Преимущество 1 -->
+                <div class="glass-card p-8 rounded-xl text-center fade-in-up" style="animation-delay: 0.1s;">
+                    <svg class="w-16 h-16 mx-auto mb-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    <h3 class="text-2xl font-bold text-white mb-2">Мгновенная доставка</h3>
+                    <p class="text-gray-400">Товар приходит сразу после оплаты в виде ссылки или текста.</p>
+                </div>
+                <!-- Преимущество 2 -->
+                <div class="glass-card p-8 rounded-xl text-center fade-in-up" style="animation-delay: 0.2s;">
+                    <svg class="w-16 h-16 mx-auto mb-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    <h3 class="text-2xl font-bold text-white mb-2">Безопасные платежи</h3>
+                    <p class="text-gray-400">Все платежи обрабатываются через надежный шлюз CryptoBot.</p>
+                </div>
+                <!-- Преимущество 3 -->
+                <div class="glass-card p-8 rounded-xl text-center fade-in-up" style="animation-delay: 0.3s;">
+                    <svg class="w-16 h-16 mx-auto mb-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 01-9 9"></path></svg>
+                    <h3 class="text-2xl font-bold text-white mb-2">Поддержка 24/7</h3>
+                    <p class="text-gray-400">Наша команда поддержки всегда готова помочь с любым вопросом.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Товары -->
+        <section id="products" class="py-20">
+            <h2 class="text-4xl font-bold text-center text-white mb-12 fade-in-up">Наши товары</h2>
+            <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Карточки товаров будут вставлены сюда -->
+            </div>
+        </section>
+    </main>
+    
+    <!-- Общее модальное окно -->
+    <div id="modal" class="modal-backdrop fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 hidden opacity-0">
+        <div id="modal-content" class="modal-content glass-card rounded-2xl w-full max-w-md mx-auto p-8 transform scale-95 opacity-0">
+            <!-- Содержимое будет вставляться сюда -->
+        </div>
+    </div>
+
+    <script>
+        // --- ДАННЫЕ И СОСТОЯНИЕ ---
+        const CRYPTO_BOT_API_TOKEN = '461739:AAAbI65Fc4Yd6jTi9s7T7kZwgcngP4IzwpI';
+
+        const products = [
+             {
+                id: 1, name: 'Discord Nitro Full', price: 5, asset: 'USDT',
+                description: 'Месячная подписка Discord Nitro с 2 бустами сервера.',
+                imageUrl: 'https://placehold.co/600x400/5865F2/ffffff?text=Nitro',
+                paid_btn_url: 'https://example.com/get/discord-nitro'
+            },
+            {
+                id: 2, name: 'Telegram Premium', price: 3, asset: 'USDT',
+                description: 'Официальная подписка на Telegram Premium на 1 месяц.',
+                imageUrl: 'https://placehold.co/600x400/2AABEE/ffffff?text=Telegram',
+                paid_btn_url: 'https://example.com/get/telegram-premium'
+            },
+            {
+                id: 3, name: 'Steam Key [Random]', price: 1, asset: 'USDT',
+                description: 'Случайный лицензионный ключ для игры в Steam.',
+                imageUrl: 'https://placehold.co/600x400/1b2838/ffffff?text=Steam',
+                paid_btn_url: 'https://example.com/get/steam-key'
+            },
+            {
+                id: 4, name: 'VPN Доступ [1 год]', price: 25, asset: 'USDT',
+                description: 'Годовая подписка на высокоскоростной VPN-сервис.',
+                imageUrl: 'https://placehold.co/600x400/22c55e/ffffff?text=VPN',
+                paid_btn_url: 'https://example.com/get/vpn-access'
+            }
+        ];
+        let userBalance = 0.00;
+        let qrCodeInstance = null;
+        
+        // --- ЭЛЕМЕНТЫ DOM ---
+        const productGrid = document.getElementById('product-grid');
+        const balanceDisplay = document.getElementById('balance-display');
+        const modal = document.getElementById('modal');
+        const modalContent = document.getElementById('modal-content');
+
+        // --- ЛОГИКА ОТОБРАЖЕНИЯ ---
+        function renderProducts() {
+            productGrid.innerHTML = '';
+            products.forEach((product, index) => {
+                const card = document.createElement('div');
+                card.className = 'glass-card rounded-xl overflow-hidden flex flex-col fade-in-up';
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.innerHTML = `
+                    <img src="${product.imageUrl}" alt="${product.name}" class="w-full h-40 object-cover">
+                    <div class="p-5 flex flex-col flex-grow">
+                        <h3 class="text-xl font-bold text-white mb-2">${product.name}</h3>
+                        <p class="text-gray-400 mb-4 flex-grow text-sm">${product.description}</p>
+                        <div class="flex justify-between items-center mt-auto">
+                            <span class="text-2xl font-bold text-cyan-400 font-orbitron">${product.price} ${product.asset}</span>
+                            <button onclick='openPaymentModal(${JSON.stringify(product)})' class="bg-cyan-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-cyan-400 transition-colors text-sm">Купить</button>
+                        </div>
+                    </div>
+                `;
+                productGrid.appendChild(card);
+            });
+        }
+
+        function updateBalanceDisplay() {
+            balanceDisplay.textContent = `${userBalance.toFixed(2)} USDT`;
+        }
+
+        // --- ЛОГИКА МОДАЛЬНЫХ ОКОН ---
+        function openModal(content) {
+            modalContent.innerHTML = content;
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modalContent.classList.remove('scale-95', 'opacity-0');
+            }, 10);
+        }
+
+        function closeModal() {
+            modal.classList.add('opacity-0');
+            modalContent.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modalContent.innerHTML = '';
+            }, 300);
+        }
+
+        function openTopUpModal() {
+            const content = `
+                <div id="topup-step">
+                    <h2 class="text-2xl font-bold mb-4 text-center text-white">Пополнение баланса</h2>
+                    <div class="mb-4">
+                        <label for="topup-amount" class="block mb-2 font-medium text-gray-300">Сумма (USDT)</label>
+                        <input type="number" id="topup-amount" min="1" step="1" placeholder="_._" class="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                    </div>
+                    <div class="mt-6 flex flex-col space-y-3">
+                        <button onclick="handleTopUp()" class="w-full bg-cyan-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-cyan-700 transition-colors">Создать счет</button>
+                        <button onclick="closeModal()" class="w-full bg-gray-600 text-gray-200 font-bold py-3 px-4 rounded-lg hover:bg-gray-500 transition-colors">Отмена</button>
+                    </div>
+                </div>
+            `;
+            openModal(content);
+        }
+        
+        function openPaymentModal(product) {
+            const content = `
+                <div id="payment-step">
+                    <h2 class="text-2xl font-bold mb-4 text-center text-white">Подтверждение покупки</h2>
+                    <div class="mb-6 text-center">
+                        <p class="text-lg text-gray-200">${product.name}</p>
+                        <p class="text-2xl font-bold text-cyan-400 mt-1">${product.price} ${product.asset}</p>
+                    </div>
+                     <div class="mt-6 flex flex-col space-y-3">
+                        <button onclick='handlePurchase(${JSON.stringify(product)})' class="w-full bg-cyan-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-cyan-700 transition-colors">Создать счет</button>
+                        <button onclick="closeModal()" class="w-full bg-gray-600 text-gray-200 font-bold py-3 px-4 rounded-lg hover:bg-gray-500 transition-colors">Отмена</button>
+                    </div>
+                </div>
+            `;
+            openModal(content);
+        }
+        
+        // --- ЛОГИКА API И ПЛАТЕЖЕЙ ---
+        
+        function handleTopUp() {
+            const amount = document.getElementById('topup-amount').value;
+            if (!amount || amount <= 0) {
+                alert("Пожалуйста, введите корректную сумму.");
+                return;
+            }
+            
+            const invoiceDetails = {
+                asset: 'USDT',
+                amount: parseFloat(amount).toString(),
+                description: 'Пополнение баланса'
+            };
+            createInvoice(invoiceDetails);
+        }
+
+        function handlePurchase(product) {
+            const invoiceDetails = {
+                asset: product.asset,
+                amount: product.price.toString(),
+                description: product.name,
+                paid_btn_name: 'viewItem',
+                paid_btn_url: product.paid_btn_url,
+            };
+            createInvoice(invoiceDetails);
+        }
+
+        async function createInvoice(details) {
+            showLoader();
+
+            try {
+                const proxiedUrl = 'https://corsproxy.io/?' + encodeURIComponent('https://pay.crypt.bot/api/createInvoice');
+                const response = await fetch(proxiedUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Crypto-Pay-API-Token': CRYPTO_BOT_API_TOKEN },
+                    body: JSON.stringify(details)
+                });
+                const data = await response.json();
+
+                if (data.ok) {
+                    displayInvoice(data.result);
+                } else {
+                    throw new Error(data.error.name || 'Неизвестная ошибка API');
+                }
+            } catch (error) {
+                console.error('Ошибка при создании счета:', error);
+                displayError(error.message);
+            }
+        }
+
+        function displayInvoice(invoice) {
+            const content = `
+                 <div class="text-center">
+                     <h2 class="text-2xl font-bold mb-4 text-white">Оплатите счет</h2>
+                     <p class="mb-4 text-gray-400">Отсканируйте QR-код или перейдите по ссылке.</p>
+                     <div id="qrcode" class="flex justify-center mb-4 p-4 bg-white rounded-lg w-48 h-48 mx-auto"></div>
+                     <a id="payment-link" href="${invoice.pay_url}" target="_blank" class="block w-full bg-green-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-600 transition-colors break-words">Перейти к оплате</a>
+                     <button onclick="closeModal()" class="mt-6 w-full bg-gray-600 text-gray-200 font-bold py-3 px-4 rounded-lg hover:bg-gray-500 transition-colors">Закрыть</button>
+                 </div>
+            `;
+            openModal(content);
+
+            // Рендерим QR-код после того, как контейнер появился в DOM
+            setTimeout(() => {
+                const qrcodeContainer = document.getElementById('qrcode');
+                if(qrcodeContainer) {
+                    new QRCode(qrcodeContainer, {
+                        text: invoice.pay_url, width: 160, height: 160,
+                        colorDark: "#000000", colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+                }
+            }, 100);
+        }
+
+        function showLoader() {
+            openModal(`
+                <div class="flex flex-col items-center justify-center text-white">
+                    <svg class="animate-spin h-10 w-10 text-cyan-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <p class="mt-4 text-lg">Создаем счет...</p>
+                </div>
+            `);
+        }
+        
+        function displayError(message) {
+             openModal(`
+                <div class="text-center">
+                    <h3 class="text-xl font-bold text-red-500 mb-2">Ошибка!</h3>
+                    <p id="error-text" class="text-gray-300">Не удалось создать счет. Причина: ${message}.</p>
+                    <button onclick="closeModal()" class="mt-6 w-full bg-cyan-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-cyan-700 transition-colors">Понятно</button>
+                </div>
+            `);
+        }
+
+        // --- ИНИЦИАЛИЗАЦИЯ И ЗАЩИТА ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProducts();
+            updateBalanceDisplay();
+            modal.addEventListener('click', (event) => {
+                if (event.target === modal) closeModal();
+            });
+
+            // Блокировка правого клика
+            document.addEventListener('contextmenu', event => event.preventDefault());
+
+            // Блокировка клавиш для вызова инструментов разработчика
+            document.addEventListener('keydown', event => {
+                if (event.key === 'F12' || 
+                   (event.ctrlKey && event.shiftKey && ['I', 'J', 'C'].includes(event.key.toUpperCase())) ||
+                   (event.metaKey && event.altKey && ['I', 'J', 'C'].includes(event.key.toUpperCase())) ) { // for MacOS
+                    event.preventDefault();
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>
+
